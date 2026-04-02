@@ -15,19 +15,62 @@ Replace this paragraph with your own summary of what your version does.
 
 ---
 
+
 ## How The System Works
 
-Explain your design in plain language.
+This recommendation system uses a simple **content-based filtering approach**. Instead of learning from other users, it compares each song’s features to a user’s preferences and recommends songs that are most similar in style and feel.
 
-Some prompts to answer:
+### 🎵 Song Features
+Each `Song` in the system includes:
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+- `energy` – intensity of the track  
+- `valence` – how positive (happy) or negative (sad) the song sounds  
+- `danceability` – how suitable the song is for dancing  
+- `acousticness` – whether the song is acoustic or electronic  
+- `tempo_bpm` – speed of the song  
+- `genre` – type of music (e.g., pop, rock, electronic)  
+- `mood` – overall emotional tone (e.g., chill, happy, aggressive)  
 
-You can include a simple diagram or bullet list if helpful.
+---
+
+### 👤 UserProfile
+The `UserProfile` stores the user’s preferred values for each feature:
+
+- `preferred_energy`  
+- `preferred_valence`  
+- `preferred_danceability`  
+- `preferred_acousticness`  
+- `preferred_tempo_bpm`  
+- `preferred_genre`  
+- `preferred_mood`  
+
+---
+
+### 🧠 Scoring Logic
+The `Recommender` computes a score for each song based on how close its features are to the user’s preferences:
+
+- For **numerical features** (energy, valence, etc.):  
+  - The system calculates how close the song’s value is to the user’s preferred value  
+  - Closer values receive higher scores  
+
+- For **categorical features** (genre, mood):  
+  - Exact matches receive a higher score  
+  - Non-matches receive a lower score  
+
+- All feature scores are combined into a **final weighted score**
+
+---
+
+### 🎯 Recommendation Selection
+- The system calculates a score for every song  
+- Songs are ranked from highest to lowest score  
+- The top N songs with the highest scores are recommended  
+
+---
+
+### 🔁 Simple Flow
+
+User Preferences → Compare with Song Features → Compute Scores → Rank Songs → Recommend Top Results
 
 ---
 
