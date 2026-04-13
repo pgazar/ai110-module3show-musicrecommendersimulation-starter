@@ -2,7 +2,7 @@
 
 ## 1. Model Name  
 
-**VibeFinder 1.0**
+**RhythmPulse 1.0**
 
 ---
 

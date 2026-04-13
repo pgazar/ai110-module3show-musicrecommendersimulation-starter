@@ -190,7 +190,7 @@ Combines reflection and model card framing from the Module 3 guidance.
 
 Give your recommender a name, for example:
 
-> VibeFinder 1.0
+> RhythmPulse 1.0
 
 ---
 
