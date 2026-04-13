@@ -8,7 +8,9 @@
 
 ## 2. Intended Use  
 
-This recommender is designed to suggest songs from a small classroom dataset based on a user's preferred genre, mood, and audio-style features. It is meant for learning and experimentation, not for real users or production music discovery.
+This recommender is designed to suggest songs from a small classroom dataset based on a user's preferred genre, mood, and audio-style features. It is meant for learning and experimentation.
+
+It should not be used for real listener recommendations, business ranking decisions, or any high-stakes product setting.
 
 ---
 

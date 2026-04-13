@@ -40,7 +40,11 @@ class UserProfile:
     favorite_genre: str
     favorite_mood: str
     target_energy: float
-    likes_acoustic: bool
+    likes_acoustic: bool = False
+    target_valence: float | None = None
+    target_danceability: float | None = None
+    target_acousticness: float | None = None
+    target_tempo_bpm: float | None = None
 
 class Recommender:
     """
@@ -54,12 +58,7 @@ class Recommender:
         if k <= 0:
             return []
 
-        prefs = {
-            "genre": user.favorite_genre,
-            "mood": user.favorite_mood,
-            "energy": user.target_energy,
-            "acousticness": 0.85 if user.likes_acoustic else 0.15,
-        }
+        prefs = _user_to_prefs(user)
         ranked = sorted(
             self.songs,
             key=lambda song: score_song(prefs, _song_to_dict(song))[0],
@@ -68,14 +67,27 @@ class Recommender:
         return ranked[:k]
 
     def explain_recommendation(self, user: UserProfile, song: Song) -> str:
-        prefs = {
-            "genre": user.favorite_genre,
-            "mood": user.favorite_mood,
-            "energy": user.target_energy,
-            "acousticness": 0.85 if user.likes_acoustic else 0.15,
-        }
+        prefs = _user_to_prefs(user)
         _, reasons = score_song(prefs, _song_to_dict(song))
         return "; ".join(reasons) if reasons else "General similarity match."
+
+
+def _user_to_prefs(user: UserProfile) -> Dict:
+    """Convert a UserProfile into the dictionary shape used by scoring."""
+    acousticness = (
+        user.target_acousticness
+        if user.target_acousticness is not None
+        else (0.85 if user.likes_acoustic else 0.15)
+    )
+    return {
+        "genre": user.favorite_genre,
+        "mood": user.favorite_mood,
+        "energy": user.target_energy,
+        "valence": user.target_valence,
+        "danceability": user.target_danceability,
+        "acousticness": acousticness,
+        "tempo_bpm": user.target_tempo_bpm,
+    }
 
 
 def _song_to_dict(song: Song) -> Dict:
@@ -145,10 +157,7 @@ def score_song(user_prefs: Dict, song: Dict, weights: Dict[str, float] | None = 
     return score, reasons
 
 def load_songs(csv_path: str) -> List[Dict]:
-    """
-    Loads songs from a CSV file.
-    Required by src/main.py
-    """
+    """Load songs from CSV and convert numeric fields so they can be scored."""
     songs: List[Dict] = []
     with open(csv_path, newline="", encoding="utf-8") as csv_file:
         reader = csv.DictReader(csv_file)
@@ -176,10 +185,7 @@ def recommend_songs(
     k: int = 5,
     weights: Dict[str, float] | None = None,
 ) -> List[Tuple[Dict, float, str]]:
-    """
-    Functional implementation of the recommendation logic.
-    Required by src/main.py
-    """
+    """Rank songs for one user profile and return scored explanations."""
     if k <= 0:
         return []
 
